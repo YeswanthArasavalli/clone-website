@@ -11,7 +11,7 @@ const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const whatsappNumber = "+916303321322";
+  const whatsappNumber = "+918500251322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -204,3 +204,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
