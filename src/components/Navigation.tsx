@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -48,7 +49,7 @@ const Navigation = () => {
             }}
             className="text-xl font-bold gradient-text"
           >
-            Yeswanth Data Labs
+            Yeswanth Arasavalli
           </a>
 
           {/* Desktop Navigation */}
@@ -116,3 +117,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+
