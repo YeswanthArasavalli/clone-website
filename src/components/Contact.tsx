@@ -24,25 +24,25 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Send email via FormSubmit.co
-      const emailFormData = new FormData();
-      emailFormData.append("name", formData.name);
-      emailFormData.append("email", formData.email);
-      emailFormData.append("message", formData.message);
-      emailFormData.append("_captcha", "false");
-      emailFormData.append("_next", window.location.href);
-
-      await fetch("https://formsubmit.co/yeswanthdatalabs@gmail.com", {
-        method: "POST",
-        body: emailFormData,
+      // Call backend API that handles both email and WhatsApp
+      const response = await fetch('/api/send-whatsapp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          phone: whatsappNumber,
+        }),
       });
 
-      // Send WhatsApp message via wa.me link (user clicks to send from their phone)
-      const whatsappMessage = `New Contact Form Submission:%0AName: ${encodeURIComponent(formData.name)}%0AEmail: ${encodeURIComponent(formData.email)}%0AMessage: ${encodeURIComponent(formData.message)}`;
-      const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
-      
-      // Log for backend integration
-      console.log("WhatsApp message ready:", whatsappLink);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit form');
+      }
 
       // Show success message
       toast({
@@ -53,10 +53,10 @@ const Contact = () => {
       // Reset form
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
