@@ -37,21 +37,12 @@ const Contact = () => {
         body: emailFormData,
       });
 
-      // Send WhatsApp message via backend API (using Twilio)
-      const whatsappMessage = `New Contact Form Submission:\n\nName: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`;
+      // Send WhatsApp message via wa.me link (user clicks to send from their phone)
+      const whatsappMessage = `New Contact Form Submission:%0AName: ${encodeURIComponent(formData.name)}%0AEmail: ${encodeURIComponent(formData.email)}%0AMessage: ${encodeURIComponent(formData.message)}`;
+      const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
       
-      // Call a backend endpoint to send WhatsApp via Twilio
-      await fetch("https://yeswantharasavalli.me/api/send-whatsapp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: whatsappNumber,
-          message: whatsappMessage,
-        }),
-      }).catch(() => {
-        // WhatsApp API may fail, but email should still go through
-        console.log("WhatsApp notification attempted");
-      });
+      // Log for backend integration
+      console.log("WhatsApp message ready:", whatsappLink);
 
       // Show success message
       toast({
