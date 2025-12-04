@@ -5,43 +5,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Clock, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useState } from "react";
 
 const Contact = () => {
   const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const whatsappNumber = "+918500251322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    try {
-      // FormSubmit.co form submission
-      const formData = new FormData(formRef.current || undefined);
-      
-      const response = await fetch('https://formsubmit.co/ajax/yeswanthdatalabs@gmail.com', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Message Sent!",
-          description: "Thanks for reaching out — I'll get back to you shortly.",
-        });
-        // Reset form
-        formRef.current?.reset();
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
-      });
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setIsSubmitting(true);
+    // FormSubmit.co will handle the form submission
+    // The form will POST directly to their endpoint
   };
 
   return (
@@ -134,7 +109,12 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="p-8">
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+              <form
+                action="https://formspree.io/f/mzzbawpy"
+                method="POST"
+                onSubmit={handleSubmit}
+                className="space-y-6"
+              >
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -169,8 +149,8 @@ const Contact = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Send Message
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Card>
