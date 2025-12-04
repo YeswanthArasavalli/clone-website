@@ -9,14 +9,58 @@ import { useState } from "react";
 
 const Contact = () => {
   const { toast } = useToast();
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const whatsappNumber = "+916303321322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsSubmitting(true);
-    // FormSubmit.co will handle the form submission
-    // The form will POST directly to their endpoint
+
+    try {
+      // Call backend API that handles both email and WhatsApp
+      const response = await fetch('/api/send-whatsapp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          phone: whatsappNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit form');
+      }
+
+      // Show success message
+      toast({
+        title: "Message Sent!",
+        description: "Thanks for reaching out — I'll get back to you shortly.",
+      });
+
+      // Reset form
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,13 +153,7 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="p-8">
-              <form
-                action="https://formsubmit.co/yeswanthdatalabs@gmail.com"
-                method="POST"
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
-              </form> 
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -123,7 +161,8 @@ const Contact = () => {
                     </label>
                     <Input
                       id="name"
-                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
                       required
                     />
                   </div>
@@ -133,8 +172,9 @@ const Contact = () => {
                     </label>
                     <Input
                       id="email"
-                      name="email"
                       type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
                     />
                   </div>
@@ -145,8 +185,9 @@ const Contact = () => {
                   </label>
                   <Textarea
                     id="message"
-                    name="message"
                     rows={5}
+                    value={formData.message}
+                    onChange={handleInputChange}
                     required
                   />
                 </div>
@@ -163,3 +204,4 @@ const Contact = () => {
 };
 
 export default Contact;
++
