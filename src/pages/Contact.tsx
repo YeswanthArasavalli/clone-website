@@ -1,211 +1,211 @@
-import { useState } from "react";
-import { Layout } from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { Mail, MessageCircle, MapPin, Clock, Send } from "lucide-react";
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
-export default function Contact() {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: ""
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
   });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      toast({
-        title: "Please fill in all fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message sent!",
-      description: "I'll get back to you within 24 hours."
-    });
-    
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      // Simulate form submission
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSubmitStatus('idle'), 3000);
+    } catch (error) {
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus('idle'), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email',
+      value: 'contact@yeswanthrasavalli.me',
+      href: 'mailto:contact@yeswanthrasavalli.me'
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      value: '+91 XXXXXXXXXX',
+      href: 'tel:+91'
+    },
+    {
+      icon: MapPin,
+      title: 'Location',
+      value: 'India',
+      href: '#'
+    }
+  ];
+
   return (
-    <Layout>
-      {/* Hero */}
-      <section className="py-16 md:py-24 bg-gradient-subtle">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center space-y-6 animate-slide-up">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">Let's Work Together</h1>
-            <p className="text-lg text-muted-foreground">
-              Tell me what you need — I'll reply with ideas and a proposal.
+    <>
+      <Navigation />
+      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              Get In Touch
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Have a project in mind or want to discuss an opportunity? I'd love to hear from you!
             </p>
           </div>
-        </div>
-      </section>
 
-      {/* Contact Content */}
-      <section className="py-16">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            {/* Contact Info */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-6">Get in Touch</h2>
-                <p className="text-muted-foreground">
-                  Whether you have a specific project in mind or just want to explore how data can help your business, I'd love to hear from you.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <a
-                  href="mailto:yeswanthdatalabs@gmail.com"
-                  className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border hover:border-primary/30 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                    <Mail className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Email</h3>
-                    <p className="text-muted-foreground">yeswanthdatalabs@gmail.com</p>
-                  </div>
-                </a>
-
-                <a
-                  href="https://wa.me/+918500251322"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border hover:border-primary/30 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">WhatsApp</h3>
-                    <p className="text-muted-foreground">Click to start a conversation</p>
-                    <p className="text-sm text-primary">Usually reply within 24 hours</p>
-                  </div>
-                </a>
-
-                <div className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border">
-                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Location</h3>
-                    <p className="text-muted-foreground">India (IST)</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border">
-                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                    <Clock className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Availability</h3>
-                    <p className="text-muted-foreground">Mon-Fri, 9AM-6PM IST</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 bg-accent/50 rounded-lg">
-                <h3 className="font-semibold text-foreground mb-2">Prefer WhatsApp?</h3>
-                <p className="text-muted-foreground text-sm mb-4">
-                  For quick questions or to start a casual conversation about your project, WhatsApp is often the fastest way to reach me.
-                </p>
-                <Button asChild variant="default">
-                  <a href="https://wa.me/+918500251322" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Chat on WhatsApp
+          {/* Contact Info and Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            {/* Contact Information */}
+            <div className="lg:col-span-1 space-y-6">
+              {contactInfo.map((info, index) => {
+                const Icon = info.icon;
+                return (
+                  <a
+                    key={index}
+                    href={info.href}
+                    className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
+                  >
+                    <div className="p-3 bg-cyan-50 rounded-lg group-hover:bg-cyan-100 transition-colors duration-300">
+                      <Icon className="w-6 h-6 text-cyan-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{info.title}</h3>
+                      <p className="text-gray-600 text-sm">{info.value}</p>
+                    </div>
                   </a>
-                </Button>
-              </div>
+                );
+              })}
             </div>
 
             {/* Contact Form */}
-            <div className="bg-card rounded-xl border border-border p-8">
-              <h2 className="text-2xl font-bold text-foreground mb-6">Send a Message</h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
+            <form onSubmit={handleSubmit} className="lg:col-span-2">
+              <div className="space-y-6 bg-white p-8 rounded-lg shadow-md border border-gray-200">
+                {/* Name */}
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
                     id="name"
                     name="name"
-                    placeholder="Your name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    maxLength={100}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    placeholder="Your name"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
+                {/* Email */}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
                     id="email"
                     name="email"
-                    type="email"
-                    placeholder="your@email.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    maxLength={255}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    placeholder="your.email@example.com"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea
+                {/* Subject */}
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    placeholder="What is this about?"
+                  />
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    Message
+                  </label>
+                  <textarea
                     id="message"
                     name="message"
-                    placeholder="Tell me about your project or question..."
-                    rows={6}
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    maxLength={1000}
+                    rows={5}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all resize-none"
+                    placeholder="Tell me about your project or opportunity..."
                   />
                 </div>
 
-                <Button
+                {/* Submit Button */}
+                <button
                   type="submit"
-                  variant="hero"
-                  size="lg"
-                  className="w-full"
                   disabled={isSubmitting}
+                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
-                    "Sending..."
+                    'Sending...'
                   ) : (
                     <>
+                      <Send size={20} />
                       Send Message
-                      <Send className="ml-2 h-5 w-5" />
                     </>
                   )}
-                </Button>
-              </form>
-            </div>
+                </button>
+
+                {/* Status Messages */}
+                {submitStatus === 'success' && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+                    Thank you for your message! I'll get back to you soon.
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    There was an error sending your message. Please try again.
+                  </div>
+                )}
+              </div>
+            </form>
           </div>
         </div>
-      </section>
-    </Layout>
+      </main>
+      <Footer />
+      <WhatsAppButton />
+    </>
   );
-}
+};
+
+export default Contact;
