@@ -14,6 +14,14 @@ const Projects = () => {
       projectUrl: "#",
       codeUrl: "#",
     },
+     {
+      title: "Retail Product Image Recognition System",
+      description: "Deep learning-based computer vision system using PyTorch and EfficientNet-B0 to classify retail product images into SKU-level categories, served through a Streamlit app for real-time predictions.",
+      achievement: "Automated SKU identification from product photos, reducing manual tagging effort and enabling faster retail analytics workflows.",
+      tools: ["PyTorch", "EfficientNet-B0", "Streamlit", "Python"],
+      projectUrl: "#",
+      codeUrl: "https://github.com/YeswanthArasavalli/retail-product-image-recognition",
+    },
     {
       title: "Customer Segmentation Analysis",
       description: "Advanced Python-based clustering analysis using K-means and RFM methodology to identify distinct customer segments. Delivered actionable insights for targeted marketing campaigns.",
@@ -125,3 +133,4 @@ const Projects = () => {
 };
 
 export default Projects;
+
