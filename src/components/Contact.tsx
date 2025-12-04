@@ -110,7 +110,7 @@ const Contact = () => {
           >
             <Card className="p-8">
               <form
-                action="https://formspree.io/f/mzzbawpy"
+                action="https://formsubmit.co/yeswanthdatalabs@gmail.com"
                 method="POST"
                 onSubmit={handleSubmit}
                 className="space-y-6"
@@ -162,3 +162,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
