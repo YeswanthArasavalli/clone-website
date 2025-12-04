@@ -20,7 +20,6 @@ const Contact = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
     setIsSubmitting(true);
 
     try {
@@ -153,7 +152,7 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form action="https://formsubmit.co/yeswanthdatalabs@gmail.com" method="POST" onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -205,3 +204,4 @@ const Contact = () => {
 
 export default Contact;
 +
+
