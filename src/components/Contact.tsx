@@ -10,7 +10,7 @@ import { useState } from "react";
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const whatsappNumber = "+918500251322";
+  const whatsappNumber = "+916303321322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,6 +115,7 @@ const Contact = () => {
                 onSubmit={handleSubmit}
                 className="space-y-6"
               >
+              </form> 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -162,4 +163,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
