@@ -22,26 +22,21 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
-      // Call backend API that handles both email and WhatsApp
-      const response = await fetch('/api/send-whatsapp', {
+      // Use FormSubmit.co - a free form submission service
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('message', formData.message);
+      formDataToSend.append('_captcha', 'false'); // Disable captcha
+
+      const response = await fetch('https://formsubmit.co/yeswanthdatalabs@gmail.com', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          phone: whatsappNumber,
-        }),
+        body: formDataToSend,
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit form');
+        throw new Error('Failed to submit form');
       }
 
       // Show success message
@@ -204,4 +199,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
