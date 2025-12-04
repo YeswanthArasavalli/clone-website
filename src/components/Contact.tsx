@@ -5,56 +5,42 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Clock, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef } from "react";
 
 const Contact = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const whatsappNumber = "+918500251322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
     try {
-      // Use FormSubmit.co - a free form submission service
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('message', formData.message);
-      formDataToSend.append('_captcha', 'false'); // Disable captcha
-
-      const response = await fetch('https://formsubmit.co/yeswanthdatalabs@gmail.com', {
+      // FormSubmit.co form submission
+      const formData = new FormData(formRef.current || undefined);
+      
+      const response = await fetch('https://formsubmit.co/ajax/yeswanthdatalabs@gmail.com', {
         method: 'POST',
-        body: formDataToSend,
+        body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
+      if (response.ok) {
+        toast({
+          title: "Message Sent!",
+          description: "Thanks for reaching out — I'll get back to you shortly.",
+        });
+        // Reset form
+        formRef.current?.reset();
+      } else {
+        throw new Error('Form submission failed');
       }
-
-      // Show success message
-      toast({
-        title: "Message Sent!",
-        description: "Thanks for reaching out — I'll get back to you shortly.",
-      });
-
-      // Reset form
-      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -148,7 +134,7 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -156,8 +142,7 @@ const Contact = () => {
                     </label>
                     <Input
                       id="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
+                      name="name"
                       required
                     />
                   </div>
@@ -167,9 +152,8 @@ const Contact = () => {
                     </label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
                       required
                     />
                   </div>
@@ -180,14 +164,13 @@ const Contact = () => {
                   </label>
                   <Textarea
                     id="message"
+                    name="message"
                     rows={5}
-                    value={formData.message}
-                    onChange={handleInputChange}
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                <Button type="submit" className="w-full">
+                  Send Message
                 </Button>
               </form>
             </Card>
@@ -199,4 +182,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
