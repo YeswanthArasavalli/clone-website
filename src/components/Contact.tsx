@@ -1,66 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Mail, MapPin, Clock, MessageCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, MapPin, Clock, MessageCircle, Send } from "lucide-react";
 
 const Contact = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const whatsappNumber = "+916303321322";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    setIsSubmitting(true);
-
-    try {
-      // Call backend API that handles both email and WhatsApp
-      const response = await fetch('/api/send-whatsapp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          phone: whatsappNumber,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit form');
-      }
-
-      // Show success message
-      toast({
-        title: "Message Sent!",
-        description: "Thanks for reaching out — I'll get back to you shortly.",
-      });
-
-      // Reset form
-      setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <section id="contact" className="py-20">
@@ -68,134 +13,190 @@ const Contact = () => {
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <motion.div
+            className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Let's Work Together</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-              Tell me what you need — I'll reply with ideas and a proposal.
+            <p className="text-sm uppercase tracking-[0.3em] text-primary mb-4">
+              Contact
             </p>
-            <p className="text-muted-foreground flex items-center justify-center gap-2 flex-wrap">
-              <span>Prefer WhatsApp?</span>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[#25D366] hover:text-[#20BA5A] font-semibold transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" /> Click here to start a chat
-              </a>
-              <span>— I usually reply within 24 hours.</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Let&apos;s work together
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Have a project in mind or want to collaborate? Share a few details and
+              you&apos;ll get a response within 24 hours.
             </p>
-            <div className="w-20 h-1 bg-gradient-primary mx-auto rounded-full mt-6" />
           </motion.div>
 
-          {/* Contact Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {/* Email */}
-            <Card className="p-6 text-center hover:shadow-medium transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Email</h3>
-              <a
-                href="mailto:yeswanthdatalabs@gmail.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                yeswanthdatalabs@gmail.com
-              </a>
-            </Card>
-
-            {/* WhatsApp */}
-            <Card className="p-6 text-center hover:shadow-medium transition-shadow">
-              <div className="w-12 h-12 bg-[#25D366]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-6 h-6 text-[#25D366]" />
-              </div>
-              <h3 className="font-semibold mb-2">WhatsApp</h3>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-[#25D366] transition-colors"
-              >
-                Start a conversation
-              </a>
-            </Card>
-
-            {/* Location */}
-            <Card className="p-6 text-center hover:shadow-medium transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Location</h3>
-              <p className="text-muted-foreground">India (IST)</p>
-            </Card>
-
-            {/* Availability */}
-            <Card className="p-6 text-center hover:shadow-medium transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Availability</h3>
-              <p className="text-muted-foreground">Mon-Fri, 9AM-6PM IST</p>
-            </Card>
-          </div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="p-8">
-              <form action="https://formsubmit.co/yeswanthdatalabs@gmail.com" method="POST" onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Name
-                    </label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+          <div className="grid md:grid-cols-3 gap-8 items-start">
+            {/* Left: contact info */}
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
+                  <p className="text-sm text-muted-foreground">Email</p>
+                  <a
+                    href="mailto:yeswanthdatalabs@gmail.com"
+                    className="font-medium hover:text-primary transition-colors"
+                  >
+                    yeswanthdatalabs@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <MessageCircle className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">WhatsApp</p>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium hover:text-primary transition-colors"
+                  >
+                    Chat on WhatsApp
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <MapPin className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Location</p>
+                  <p className="font-medium">India (IST)</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Clock className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Response time</p>
+                  <p className="font-medium">Within 24 hours</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right: FormSubmit form */}
+            <motion.div
+              className="md:col-span-2 bg-card border border-border rounded-2xl p-6 md:p-8 shadow-soft"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <form
+                action="https://formsubmit.co/yeswanthdatalabs@gmail.com"
+                method="POST"
+                className="space-y-6"
+                onSubmit={() => setIsSubmitting(true)}
+              >
+                {/* FormSubmit config */}
+                <input type="hidden" name="_captcha" value="false" />
+                <input
+                  type="hidden"
+                  name="_subject"
+                  value="New portfolio contact"
+                />
+                <input
+                  type="hidden"
+                  name="_template"
+                  value="table"
+                />
+                {/* optional redirect after submit */}
+                <input
+                  type="hidden"
+                  name="_next"
+                  value="https://yeswantharasavalli.me/#contact"
+                />
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="name" className="text-sm font-medium">
+                      Name
+                    </label>
+                    <input
+                      id="name"
+                      name="name"
+                      placeholder="Your name"
+                      required
+                      maxLength={100}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      required
+                      maxLength={255}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="subject" className="text-sm font-medium">
+                    Subject
                   </label>
-                  <Textarea
-                    id="message"
-                    rows={5}
-                    value={formData.message}
-                    onChange={handleInputChange}
+                  <input
+                    id="subject"
+                    name="subject"
+                    placeholder="Project, collaboration, or question"
                     required
+                    maxLength={150}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+
+                <div className="space-y-2">
+                  <label htmlFor="message" className="text-sm font-medium">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    placeholder="Tell me about your project, timeline, or questions..."
+                    rows={6}
+                    required
+                    maxLength={1000}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-60"
+                >
                   {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
+                  <Send className="ml-2 h-4 w-4" />
+                </button>
               </form>
-            </Card>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -203,5 +204,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
-
